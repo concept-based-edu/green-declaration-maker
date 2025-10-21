@@ -58,15 +58,20 @@ const DeclarationApp = {
         const teamNameInput = document.getElementById('teamName');
         const membersLabel = document.getElementById('membersLabel');
         const membersInput = document.getElementById('members');
+        const studentNameLabel = document.getElementById('studentNameLabel');
 
         if (nameLabel && teamNameInput) {
-            nameLabel.textContent = isGroup ? '모둥 이름' : '이름';
-            teamNameInput.placeholder = isGroup ? '예: 지구지킴이' : '예: 홍길동';
+            nameLabel.textContent = isGroup ? '모둠 이름' : 'NGO 이름';
+            teamNameInput.placeholder = isGroup ? '예: 지구지킴이' : '예: 환경지킴이';
         }
 
         if (membersLabel && membersInput) {
-            membersLabel.textContent = isGroup ? '모둥원 (선택)' : '학급 및 번호 (선택)';
-            membersInput.placeholder = isGroup ? '예: 홍길동, 김영희, 이철수' : '예: 6학년 2반 3번';
+            membersLabel.textContent = isGroup ? '모둠원 (선택)' : '함께하는 친구 (선택)';
+            membersInput.placeholder = isGroup ? '예: 홍길동, 김영희, 이철수' : '예: 김영희, 이철수';
+        }
+        
+        if (studentNameLabel) {
+            studentNameLabel.textContent = isGroup ? '대표 이름' : '이름';
         }
     },
 
@@ -106,9 +111,130 @@ const DeclarationApp = {
             if (progressBar) {
                 progressBar.style.width = progress + '%';
             }
+            
+            // Zone 2 업데이트
+            this.updateCompletionSection();
         } catch (error) {
             console.error('진행도 업데이트 오류:', error);
         }
+    },
+    
+    /**
+     * Zone 2A: 학습 과정 섹션 업데이트 (1-5단계)
+     */
+    updateLearningSection() {
+        const learningFields = [
+            { id: 'teamName', label: 'NGO 이름' },
+            { id: 'problemDetail', label: '환경 문제 설명' },
+            { id: 'coreMessage', label: '핵심 메시지' },
+            { id: 'targetStrategy', label: '설득 대상' },
+            { ids: ['action1', 'action2'], label: '실천 방안', checkId: 'check-actions' }
+        ];
+        
+        let allComplete = true;
+        let completedCount = 0;
+        
+        learningFields.forEach(field => {
+            if (field.ids) {
+                // 실천 방안: action1과 action2가 모두 있어야 함
+                const el1 = document.getElementById(field.ids[0]);
+                const el2 = document.getElementById(field.ids[1]);
+                const checkItem = document.getElementById(field.checkId);
+                
+                if (el1 && el2 && el1.value.trim() && el2.value.trim()) {
+                    completedCount++;
+                    if (checkItem) {
+                        checkItem.classList.add('completed');
+                        checkItem.querySelector('.icon').textContent = '✅';
+                    }
+                } else {
+                    allComplete = false;
+                    if (checkItem) {
+                        checkItem.classList.remove('completed');
+                        checkItem.querySelector('.icon').textContent = '◯';
+                    }
+                }
+            } else {
+                const element = document.getElementById(field.id);
+                const checkItem = document.getElementById(`check-${field.id}`);
+                
+                if (element && element.value.trim()) {
+                    completedCount++;
+                    if (checkItem) {
+                        checkItem.classList.add('completed');
+                        checkItem.querySelector('.icon').textContent = '✅';
+                    }
+                } else {
+                    allComplete = false;
+                    if (checkItem) {
+                        checkItem.classList.remove('completed');
+                        checkItem.querySelector('.icon').textContent = '◯';
+                    }
+                }
+            }
+        });
+        
+        const learningSection = document.getElementById('learningSection');
+        const learningStatus = document.getElementById('learningStatus');
+        const btnLearning = document.getElementById('btnLearning');
+        
+        if (learningSection && learningStatus && btnLearning) {
+            if (allComplete) {
+                learningSection.classList.add('ready');
+                learningStatus.textContent = `✅ 학습 과정 완료! 저장할 수 있어요!`;
+                btnLearning.disabled = false;
+            } else {
+                learningSection.classList.remove('ready');
+                learningStatus.textContent = `필수 항목 ${completedCount}/${learningFields.length} 완료`;
+                btnLearning.disabled = true;
+            }
+        }
+    },
+    
+    /**
+     * Zone 2B: 선언문 섹션 업데이트 (6단계)
+     */
+    updateDeclarationSection() {
+        const declaration = document.getElementById('declaration');
+        const checkItem = document.getElementById('check-declaration');
+        const declarationSection = document.getElementById('declarationSection');
+        const declarationStatus = document.getElementById('declarationStatus');
+        const btnDeclaration = document.getElementById('btnDeclaration');
+        const btnPreview = document.getElementById('btnPreview');
+        
+        const isComplete = declaration && declaration.value.trim();
+        
+        if (checkItem) {
+            if (isComplete) {
+                checkItem.classList.add('completed');
+                checkItem.querySelector('.icon').textContent = '✅';
+            } else {
+                checkItem.classList.remove('completed');
+                checkItem.querySelector('.icon').textContent = '◯';
+            }
+        }
+        
+        if (declarationSection && declarationStatus && btnDeclaration && btnPreview) {
+            if (isComplete) {
+                declarationSection.classList.add('ready');
+                declarationStatus.textContent = `✅ 선언문 완료! 저장하거나 미리보기를 확인하세요!`;
+                btnDeclaration.disabled = false;
+                btnPreview.disabled = false;
+            } else {
+                declarationSection.classList.remove('ready');
+                declarationStatus.textContent = `선언문을 작성하면 저장할 수 있어요!`;
+                btnDeclaration.disabled = true;
+                btnPreview.disabled = true;
+            }
+        }
+    },
+    
+    /**
+     * Zone 2 완료 섹션 업데이트 (통합)
+     */
+    updateCompletionSection() {
+        this.updateLearningSection();
+        this.updateDeclarationSection();
     },
 
     /**
@@ -139,14 +265,21 @@ const DeclarationApp = {
     /**
      * 자동 저장
      */
-    autoSave() {
+    autoSave(showMessage = false) {
         try {
             const formData = this.getFormData();
             formData.timestamp = new Date().toISOString();
             localStorage.setItem('greenDeclaration', JSON.stringify(formData));
             console.log('자동 저장 완료:', new Date().toLocaleTimeString());
+            
+            if (showMessage) {
+                this.showNotification('✅ 임시 저장되었습니다!', 'success');
+            }
         } catch (error) {
             console.error('자동 저장 오류:', error);
+            if (showMessage) {
+                this.showNotification('❌ 저장 중 오류가 발생했습니다.', 'error');
+            }
         }
     },
 
@@ -156,9 +289,13 @@ const DeclarationApp = {
     getFormData() {
         return {
             mode: document.querySelector('input[name="mode"]:checked')?.value || 'group',
+            grade: document.getElementById('grade')?.value || '',
+            classNum: document.getElementById('classNum')?.value || '',
+            studentName: document.getElementById('studentName')?.value || '',
             teamName: document.getElementById('teamName')?.value || '',
             members: document.getElementById('members')?.value || '',
             problems: Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value),
+            otherProblem: document.getElementById('otherProblem')?.value || '',
             problemDetail: document.getElementById('problemDetail')?.value || '',
             coreMessage: document.getElementById('coreMessage')?.value || '',
             target: document.querySelector('input[name="target"]:checked')?.value || '',
@@ -229,8 +366,9 @@ const DeclarationApp = {
 
         // 텍스트 필드
         const textFields = [
-            'teamName', 'members', 'problemDetail', 'coreMessage',
-            'targetStrategy', 'action1', 'action2', 'action3', 'declaration'
+            'grade', 'classNum', 'studentName', 'teamName', 'members', 
+            'problemDetail', 'coreMessage', 'targetStrategy', 
+            'action1', 'action2', 'action3', 'declaration'
         ];
         textFields.forEach(field => {
             const element = document.getElementById(field);
@@ -239,10 +377,16 @@ const DeclarationApp = {
             }
         });
 
-        // 체크박스
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-            cb.checked = data.problems && data.problems.includes(cb.value);
-        });
+        // 기타 환경 문제
+        const otherProblemElement = document.getElementById('otherProblem');
+        if (otherProblemElement && data.otherProblem) {
+            otherProblemElement.value = data.otherProblem;
+            }
+
+            // 체크박스
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.checked = data.problems && data.problems.includes(cb.value);
+            });
 
         // 대상 선택
         const targetRadio = document.querySelector(`input[name="target"][value="${data.target}"]`);
@@ -278,6 +422,9 @@ const DeclarationApp = {
             }
 
             // 값 가져오기 (XSS 방어)
+            const grade = this.escapeHtml(document.getElementById('grade')?.value || '');
+            const classNum = this.escapeHtml(document.getElementById('classNum')?.value || '');
+            const studentName = this.escapeHtml(document.getElementById('studentName')?.value || '');
             const teamName = this.escapeHtml(document.getElementById('teamName').value) || '우리 NGO';
             const members = this.escapeHtml(document.getElementById('members').value);
             
@@ -285,6 +432,10 @@ const DeclarationApp = {
             document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
                 problems.push(this.escapeHtml(cb.value));
             });
+            const otherProblem = this.escapeHtml(document.getElementById('otherProblem').value);
+            if (otherProblem) {
+                problems.push(otherProblem);
+            }
             const problemDetail = this.escapeHtml(document.getElementById('problemDetail').value);
             
             const coreMessage = this.escapeHtml(document.getElementById('coreMessage').value);
@@ -299,7 +450,7 @@ const DeclarationApp = {
 
             // 미리보기 HTML 생성
             let previewHTML = this.buildPreviewHTML({
-                teamName, members, problems, problemDetail,
+                grade, classNum, studentName, teamName, members, problems, problemDetail,
                 coreMessage, target, targetStrategy,
                 action1, action2, action3, declaration
             });
@@ -331,6 +482,17 @@ const DeclarationApp = {
         html += `<div class="preview-section" style="text-align: center; background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); color: white; padding: 20px;">`;
         html += `<div style="font-size: 36px; margin-bottom: 10px;">🌍</div>`;
         html += `<h2 style="font-size: 28px; margin-bottom: 10px;">${data.teamName}</h2>`;
+        
+        // 학년, 반, 이름 표시
+        const studentInfo = [];
+        if (data.grade) studentInfo.push(`${data.grade}학년`);
+        if (data.classNum) studentInfo.push(`${data.classNum}반`);
+        if (data.studentName) studentInfo.push(data.studentName);
+        
+        if (studentInfo.length > 0) {
+            html += `<div style="font-size: 15px; opacity: 0.95; margin-bottom: 8px;">${studentInfo.join(' ')}</div>`;
+        }
+        
         if (data.members) {
             html += `<div style="font-size: 14px; opacity: 0.9;">${data.members}</div>`;
         }
@@ -457,6 +619,74 @@ const DeclarationApp = {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
         }, 3000);
+    },
+    
+    /**
+     * 초기화 기능
+     */
+    resetForm() {
+        // 1차 확인
+        if (!confirm('⚠️ 정말 초기화하시겠습니까?\n\n작성한 내용이 모두 사라집니다.')) {
+            return;
+        }
+        
+        // 2차 확인 - 다운로드 권유
+        const hasContent = localStorage.getItem('greenDeclaration');
+        if (hasContent) {
+            const formData = this.getFormData();
+            const hasSignificantContent = formData.teamName || formData.declaration;
+            
+            if (hasSignificantContent) {
+                const result = confirm('💾 초기화하기 전에 다운로드하시겠습니까?\n\n(취소를 누르면 초기화가 취소됩니다)');
+                if (result) {
+                    // 다운로드 후 초기화
+                    this.showNotification('💾 다운로드를 먼저 진행해주세요!', 'success');
+                    return;
+                }
+            }
+        }
+        
+        this.performReset();
+    },
+    
+    /**
+     * 실제 초기화 수행
+     */
+    performReset() {
+        try {
+            // localStorage 삭제
+            localStorage.removeItem('greenDeclaration');
+            
+            // 폼 초기화
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+                el.value = '';
+            });
+            
+            document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                el.checked = false;
+            });
+            
+            document.querySelectorAll('input[type="radio"]').forEach(el => {
+                el.checked = el.defaultChecked;
+            });
+            
+            // 미리보기 숨기기
+            const preview = document.getElementById('preview');
+            if (preview) {
+                preview.style.display = 'none';
+            }
+            
+            // 진행도 초기화
+            this.updateProgress();
+            
+            // 페이지 맨 위로
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            this.showNotification('✅ 새로 작성할 준비가 되었습니다!', 'success');
+        } catch (error) {
+            console.error('초기화 오류:', error);
+            alert('초기화 중 오류가 발생했습니다.');
+        }
     }
 };
 
