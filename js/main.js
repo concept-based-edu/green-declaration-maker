@@ -60,12 +60,12 @@ const DeclarationApp = {
         const membersInput = document.getElementById('members');
 
         if (nameLabel && teamNameInput) {
-            nameLabel.textContent = isGroup ? '모둠 이름' : '이름';
+            nameLabel.textContent = isGroup ? '모둥 이름' : '이름';
             teamNameInput.placeholder = isGroup ? '예: 지구지킴이' : '예: 홍길동';
         }
 
         if (membersLabel && membersInput) {
-            membersLabel.textContent = isGroup ? '모둠원 (선택)' : '학급 및 번호 (선택)';
+            membersLabel.textContent = isGroup ? '모둥원 (선택)' : '학급 및 번호 (선택)';
             membersInput.placeholder = isGroup ? '예: 홍길동, 김영희, 이철수' : '예: 6학년 2반 3번';
         }
     },
