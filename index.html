@@ -24,6 +24,30 @@
             <h1>🌍 그린NGO 홍보대사</h1>
             <p>지속가능한 미래를 위한 선언문 만들기</p>
             <span class="badge">6학년 사회 프로젝트</span>
+            
+            <!-- Zone 1: 헤더 액션 버튼 -->
+            <div class="header-actions">
+                <button class="btn-header" onclick="DeclarationApp.autoSave(true)" aria-label="임시 저장">
+                    💾 임시 저장
+                </button>
+                <button class="btn-header" onclick="loadSaved()" aria-label="저장된 내용 불러오기">
+                    📂 불러오기
+                </button>
+                <button class="btn-header btn-export" onclick="DeclarationApp.exportToFile()" aria-label="작업 내용 파일로 내보내기">
+                    📥 파일로 저장
+                </button>
+                <button class="btn-header btn-import" onclick="DeclarationApp.importFromFile()" aria-label="파일에서 불러오기">
+                    📤 파일에서 불러오기
+                </button>
+                <button class="btn-header btn-reset" onclick="DeclarationApp.resetForm()" aria-label="학습 초기화 (처음부터 시작)">
+                    🗑️ 학습 초기화
+                </button>
+            </div>
+            <div class="header-notice">
+                💡 팁: 집에서 이어서 하려면 "파일로 저장"을 누르고, 집에서 "파일에서 불러오기"를 사용하세요!
+                <br/>
+                💻 공용 컴퓨터 사용 시: 페이지를 닫기 전에 "학습 초기화" 버튼을 꼭 눌러주세요!
+            </div>
         </header>
 
         <!-- 메인 콘텐츠 -->
@@ -34,7 +58,7 @@
                     <input type="radio" id="mode-group" name="mode" value="group" checked>
                     <label for="mode-group" tabindex="0" role="radio" aria-checked="true">
                         <div class="mode-icon" aria-hidden="true">👥</div>
-                        <div class="mode-title">모둥 활동</div>
+                        <div class="mode-title">모둠 활동</div>
                         <div class="mode-desc">친구들과 함께 작성</div>
                     </label>
                 </div>
@@ -60,16 +84,32 @@
                     <span>기본 정보</span>
                 </div>
                 
+                <!-- 학년, 반, 이름 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="grade">학년</label>
+                        <input type="text" id="grade" placeholder="예: 6">
+                    </div>
+                    <div class="form-group">
+                        <label for="classNum">반</label>
+                        <input type="text" id="classNum" placeholder="예: 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentName" id="studentNameLabel">이름</label>
+                        <input type="text" id="studentName" placeholder="예: 홍길동">
+                    </div>
+                </div>
+                
                 <div class="form-group">
-                    <label for="teamName" id="nameLabel">모둥 이름</label>
+                    <label for="teamName" id="nameLabel">모둠 이름</label>
                     <input type="text" id="teamName" aria-required="true" placeholder="예: 지구지킴이">
                     <div class="hint">여러분의 NGO 이름을 정해보세요!</div>
                 </div>
 
                 <div class="form-group">
-                    <label for="members" id="membersLabel">모둥원 (선택)</label>
+                    <label for="members" id="membersLabel">모둠원 (선택)</label>
                     <input type="text" id="members" placeholder="예: 홍길동, 김영희, 이철수">
-                    <div class="hint">모둥원 이름을 쉰표(,)로 구분해서 적어주세요</div>
+                    <div class="hint">모둠원 이름을 쉼표(,)로 구분해서 적어주세요</div>
                 </div>
             </section>
 
@@ -113,6 +153,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="otherProblem">기타 환경 문제 (직접 입력)</label>
+                    <input type="text" id="otherProblem" placeholder="예: 물 부족, 토양 오염, 생물 다양성 감소 등">
+                    <div class="hint">위 목록에 없는 환경 문제가 있다면 직접 입력해주세요</div>
+                </div>
+
+                <div class="form-group">
                     <label for="problemDetail">문제 상황 설명</label>
                     <textarea id="problemDetail" aria-required="true" 
                         placeholder="선택한 환경 문제가 왜 심각한지, 어떤 영향을 미치는지 조사한 내용을 바탕으로 적어보세요."></textarea>
@@ -151,7 +197,7 @@
 
                 <div class="form-group">
                     <fieldset>
-                        <legend>설듍 대상 선택</legend>
+                        <legend>설득 대상 선택</legend>
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="target1" name="target" value="초등학생" checked>
@@ -188,7 +234,7 @@
                 <div class="form-group">
                     <label for="targetStrategy">이 대상을 선택한 이유</label>
                     <textarea id="targetStrategy" aria-required="true" 
-                        placeholder="왜 이 대상이 중요한가요? 어떻게 설듍할 계획인가요?"></textarea>
+                        placeholder="왜 이 대상이 중요한가요? 어떻게 설득할 계획인가요?"></textarea>
                 </div>
             </section>
 
@@ -250,15 +296,81 @@
                 </div>
             </section>
 
-            <!-- 미리보기 생성 버튼 -->
-            <div class="button-group">
-                <button class="btn btn-warning" onclick="loadSaved()" aria-label="저장된 내용 불러오기">
-                    📂 저장된 내용 불러오기
+            <!-- Zone 2A: 학습 과정 완료 (1-5단계) -->
+            <section class="completion-section phase-1" id="learningSection" aria-labelledby="learning-title">
+                <h3 id="learning-title">📚 학습 과정 (1-5단계)</h3>
+
+                <div class="completion-status" id="learningStatus">
+                    필수 5개 항목을 모두 작성하면 저장할 수 있어요!
+                </div>
+
+                <!-- 필수 항목 체크리스트 (1-5단계) -->
+                <div class="required-checklist" id="learningChecklist">
+                    <div class="required-checklist-item" id="check-teamName">
+                        <span class="icon">◯</span>
+                        <span>NGO 이름</span>
+                    </div>
+                    <div class="required-checklist-item" id="check-problemDetail">
+                        <span class="icon">◯</span>
+                        <span>환경 문제 설명</span>
+                    </div>
+                    <div class="required-checklist-item" id="check-coreMessage">
+                        <span class="icon">◯</span>
+                        <span>핵심 메시지</span>
+                    </div>
+                    <div class="required-checklist-item" id="check-targetStrategy">
+                        <span class="icon">◯</span>
+                        <span>설득 대상 & 전략</span>
+                    </div>
+                    <div class="required-checklist-item" id="check-actions">
+                        <span class="icon">◯</span>
+                        <span>실천 방안 (1, 2)</span>
+                    </div>
+                </div>
+
+                <p>1-5단계 학습 과정을 모두 완료하면<br/>아래 버튼으로 바로 저장할 수 있어요!</p>
+
+                <button class="btn-preview-large" id="btnLearning"
+                    onclick="ExportModule.downloadLearningResult()"
+                    disabled
+                    aria-label="학습 과정 이미지 저장">
+                    📊 학습 과정 저장하기
                 </button>
-                <button class="btn btn-primary" onclick="generatePreview()" aria-label="선언문 미리보기 생성">
-                    📄 선언문 미리보기
-                </button>
-            </div>
+            </section>
+
+            <!-- Zone 2B: 선언문 완료 (6단계) -->
+            <section class="completion-section phase-2" id="declarationSection" aria-labelledby="declaration-title">
+                <h3 id="declaration-title">📜 지속가능한 미래 선언문</h3>
+
+                <div class="completion-status" id="declarationStatus">
+                    멋진 선언문을 작성하면 저장할 수 있어요!
+                </div>
+
+                <!-- 체크리스트 (6단계) -->
+                <div class="required-checklist" id="declarationChecklist">
+                    <div class="required-checklist-item" id="check-declaration">
+                        <span class="icon">◯</span>
+                        <span>선언문 작성</span>
+                    </div>
+                </div>
+
+                <p>선언문을 완성하면<br/>아래 버튼으로 저장하거나 전체를 확인할 수 있어요!</p>
+
+                <div class="button-group">
+                    <button class="btn btn-warning" id="btnDeclaration"
+                        onclick="ExportModule.downloadDeclarationOnly()"
+                        disabled
+                        aria-label="선언문만 이미지 저장">
+                        📜 선언문 템플릿 저장
+                    </button>
+                    <button class="btn btn-primary" id="btnPreview"
+                        onclick="generatePreview()"
+                        disabled
+                        aria-label="전체 미리보기 생성">
+                        📄 전체 미리보기
+                    </button>
+                </div>
+            </section>
 
             <!-- 미리보기 -->
             <section class="preview" id="preview" style="display: none;" aria-label="선언문 미리보기">
@@ -274,6 +386,12 @@
                     <button class="btn btn-secondary" onclick="ExportModule.downloadImage()" aria-label="이미지로 다운로드">
                         🖼️ 이미지 다운로드
                     </button>
+                    <button class="btn btn-success" onclick="ExportModule.downloadLearningResult()" aria-label="학습 결과 이미지 저장">
+                        📊 학습 결과 이미지 저장
+                    </button>
+                    <button class="btn btn-success" onclick="ExportModule.downloadDeclarationOnly()" aria-label="선언문만 이미지로 저장">
+                        📜 선언문만 이미지 저장
+                    </button>
                     <button class="btn btn-outline" onclick="window.print()" aria-label="인쇄하기">
                         🖨️ 인쇄하기
                     </button>
@@ -284,6 +402,12 @@
             </section>
         </main>
     </div>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <p>Made with 💚 by <strong>룰룰랄라 한기쌤</strong></p>
+        <p class="footer-year">Since 2025</p>
+    </footer>
 
     <!-- 자바스크립트 -->
     <script src="js/export.js"></script>
