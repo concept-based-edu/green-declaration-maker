@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline';">
+    <meta name="description" content="6학년 사회 프로젝트 - 지속가능한 미래를 위한 그린NGO 선언문 만들기">
+    <meta name="keywords" content="환경교육, 선언문, 그린NGO, 사회 프로젝트, 6학년">
+    <meta name="author" content="Green Declaration Maker">
+    
+    <title>그린NGO 홍보대사 - 지속가능한 미래 선언문 만들기</title>
+    
+    <!-- 스타일시트 -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- 외부 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header" role="banner">
+            <h1>🌍 그린NGO 홍보대사</h1>
+            <p>지속가능한 미래를 위한 선언문 만들기</p>
+            <span class="badge">6학년 사회 프로젝트</span>
+        </header>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="content" role="main">
+            <!-- 모드 선택 -->
+            <section aria-label="활동 모드 선택" class="mode-selector">
+                <div class="mode-option">
+                    <input type="radio" id="mode-group" name="mode" value="group" checked>
+                    <label for="mode-group" tabindex="0" role="radio" aria-checked="true">
+                        <div class="mode-icon" aria-hidden="true">👥</div>
+                        <div class="mode-title">모둠 활동</div>
+                        <div class="mode-desc">친구들과 함께 작성</div>
+                    </label>
+                </div>
+                <div class="mode-option">
+                    <input type="radio" id="mode-individual" name="mode" value="individual">
+                    <label for="mode-individual" tabindex="0" role="radio" aria-checked="false">
+                        <div class="mode-icon" aria-hidden="true">👤</div>
+                        <div class="mode-title">개인 활동</div>
+                        <div class="mode-desc">나 혼자 작성</div>
+                    </label>
+                </div>
+            </section>
+
+            <!-- 진행도 표시 -->
+            <div class="progress-bar" role="progressbar" aria-label="작성 진행도" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <!-- Step 1: 기본 정보 -->
+            <section class="section" aria-labelledby="step1-title">
+                <div class="section-title" id="step1-title">
+                    <span class="step-number" aria-label="1단계">1</span>
+                    <span>기본 정보</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="teamName" id="nameLabel">모둠 이름</label>
+                    <input type="text" id="teamName" aria-required="true" placeholder="예: 지구지킴이">
+                    <div class="hint">여러분의 NGO 이름을 정해보세요!</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="members" id="membersLabel">모둠원 (선택)</label>
+                    <input type="text" id="members" placeholder="예: 홍길동, 김영희, 이철수">
+                    <div class="hint">모둠원 이름을 쉼표(,)로 구분해서 적어주세요</div>
+                </div>
+            </section>
+
+            <!-- Step 2: 환경 문제 선택 -->
+            <section class="section" aria-labelledby="step2-title">
+                <div class="section-title" id="step2-title">
+                    <span class="step-number" aria-label="2단계">2</span>
+                    <span>우리가 해결하고 싶은 환경 문제</span>
+                </div>
+
+                <div class="form-group">
+                    <fieldset>
+                        <legend>환경 문제 선택 (여러 개 가능)</legend>
+                        <div class="checkbox-group">
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="problem1" value="플라스틱 쓰레기">
+                                <label for="problem1">플라스틱 쓰레기</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="problem2" value="기후변화">
+                                <label for="problem2">기후변화</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="problem3" value="미세먼지">
+                                <label for="problem3">미세먼지</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="problem4" value="해양 오염">
+                                <label for="problem4">해양 오염</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="problem5" value="숲 파괴">
+                                <label for="problem5">숲 파괴</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="problem6" value="에너지 낭비">
+                                <label for="problem6">에너지 낭비</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="form-group">
+                    <label for="problemDetail">문제 상황 설명</label>
+                    <textarea id="problemDetail" aria-required="true" 
+                        placeholder="선택한 환경 문제가 왜 심각한지, 어떤 영향을 미치는지 조사한 내용을 바탕으로 적어보세요."></textarea>
+                    <div class="hint">1-9차시에 조사한 내용을 활용하세요</div>
+                </div>
+            </section>
+
+            <!-- Step 3: 핵심 메시지 -->
+            <section class="section" aria-labelledby="step3-title">
+                <div class="section-title" id="step3-title">
+                    <span class="step-number" aria-label="3단계">3</span>
+                    <span>우리의 핵심 메시지</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="coreMessage">한 문장으로 전달할 메시지</label>
+                    <input type="text" id="coreMessage" aria-required="true" 
+                        placeholder="예: 텀블러 하나로 지구를 지켜요!">
+                    <div class="hint">💡 짧고 임팩트 있게! 사람들이 기억하기 쉬운 문장으로</div>
+                </div>
+
+                <div class="examples">
+                    <div class="examples-title">✨ 좋은 메시지 예시</div>
+                    <div class="example-item">"플라스틱 괴물을 물리치자!"</div>
+                    <div class="example-item">"우리 아이가 살아갈 깨끗한 지구"</div>
+                    <div class="example-item">"작은 실천, 큰 변화"</div>
+                </div>
+            </section>
+
+            <!-- Step 4: 설득 대상 -->
+            <section class="section" aria-labelledby="step4-title">
+                <div class="section-title" id="step4-title">
+                    <span class="step-number" aria-label="4단계">4</span>
+                    <span>누구를 설득할까요?</span>
+                </div>
+
+                <div class="form-group">
+                    <fieldset>
+                        <legend>설득 대상 선택</legend>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="target1" name="target" value="초등학생" checked>
+                                <label for="target1" tabindex="0">
+                                    <div style="font-size: 24px; margin-bottom: 5px;" aria-hidden="true">👦👧</div>
+                                    초등학생
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="target2" name="target" value="학부모">
+                                <label for="target2" tabindex="0">
+                                    <div style="font-size: 24px; margin-bottom: 5px;" aria-hidden="true">👨‍👩‍👧‍👦</div>
+                                    학부모
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="target3" name="target" value="학교">
+                                <label for="target3" tabindex="0">
+                                    <div style="font-size: 24px; margin-bottom: 5px;" aria-hidden="true">🏫</div>
+                                    학교
+                                </label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="target4" name="target" value="지역사회">
+                                <label for="target4" tabindex="0">
+                                    <div style="font-size: 24px; margin-bottom: 5px;" aria-hidden="true">🏘️</div>
+                                    지역사회
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetStrategy">이 대상을 선택한 이유</label>
+                    <textarea id="targetStrategy" aria-required="true" 
+                        placeholder="왜 이 대상이 중요한가요? 어떻게 설득할 계획인가요?"></textarea>
+                </div>
+            </section>
+
+            <!-- Step 5: 실천 방안 -->
+            <section class="section" aria-labelledby="step5-title">
+                <div class="section-title" id="step5-title">
+                    <span class="step-number" aria-label="5단계">5</span>
+                    <span>구체적인 실천 방안</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="action1">실천 방안 1 (필수)</label>
+                    <input type="text" id="action1" aria-required="true" 
+                        placeholder="예: 일주일에 3번 텀블러 사용하기">
+                </div>
+
+                <div class="form-group">
+                    <label for="action2">실천 방안 2 (필수)</label>
+                    <input type="text" id="action2" aria-required="true" 
+                        placeholder="예: 플라스틱 빨대 거절하기">
+                </div>
+
+                <div class="form-group">
+                    <label for="action3">실천 방안 3 (선택)</label>
+                    <input type="text" id="action3" 
+                        placeholder="예: 친구들에게 환경 보호 알리기">
+                </div>
+
+                <div class="hint">💡 실천 가능하고 구체적인 행동으로 적어주세요!</div>
+            </section>
+
+            <!-- Step 6: 선언문 작성 -->
+            <section class="section" aria-labelledby="step6-title">
+                <div class="section-title" id="step6-title">
+                    <span class="step-number" aria-label="6단계">6</span>
+                    <span>지속가능한 미래 선언문</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="declaration">우리의 선언문 (자유롭게 작성)</label>
+                    <textarea id="declaration" aria-required="true" style="min-height: 150px;" 
+                        placeholder="위에서 작성한 내용을 바탕으로 멋진 선언문을 만들어보세요!
+
+예시:
+우리 [NGO이름]는 [환경 문제]를 해결하기 위해 노력합니다.
+우리는 [핵심 메시지]를 믿습니다.
+이를 위해 우리는 [실천 방안들]을 약속합니다.
+[대상]에게 호소합니다: 함께해주세요!"></textarea>
+                </div>
+
+                <div class="examples">
+                    <div class="examples-title">✨ 선언문 예시</div>
+                    <div class="example-item">
+                        우리 '플라스틱 제로'는 플라스틱 쓰레기로부터 지구를 지키기 위해 노력합니다.
+                        작은 실천이 모여 큰 변화를 만든다고 믿습니다.
+                        우리는 매일 텀블러를 사용하고, 일회용품을 거절하며, 친구들에게 환경 보호의 중요성을 알립니다.
+                        전교생 여러분, 우리와 함께 지구를 지켜주세요!
+                    </div>
+                </div>
+            </section>
+
+            <!-- 미리보기 생성 버튼 -->
+            <div class="button-group">
+                <button class="btn btn-warning" onclick="loadSaved()" aria-label="저장된 내용 불러오기">
+                    📂 저장된 내용 불러오기
+                </button>
+                <button class="btn btn-primary" onclick="generatePreview()" aria-label="선언문 미리보기 생성">
+                    📄 선언문 미리보기
+                </button>
+            </div>
+
+            <!-- 미리보기 -->
+            <section class="preview" id="preview" style="display: none;" aria-label="선언문 미리보기">
+                <h2 class="preview-title">
+                    🌏 지속가능한 미래 선언문
+                </h2>
+                <div class="preview-content" id="previewContent"></div>
+                
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="ExportModule.downloadPDF()" aria-label="PDF로 다운로드">
+                        📥 PDF 다운로드
+                    </button>
+                    <button class="btn btn-secondary" onclick="ExportModule.downloadImage()" aria-label="이미지로 다운로드">
+                        🖼️ 이미지 다운로드
+                    </button>
+                    <button class="btn btn-outline" onclick="window.print()" aria-label="인쇄하기">
+                        🖨️ 인쇄하기
+                    </button>
+                    <button class="btn btn-outline" onclick="copyToClipboard()" aria-label="텍스트 복사하기">
+                        📋 복사하기
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 자바스크립트 -->
+    <script src="js/export.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
